@@ -1,4 +1,4 @@
-# رواق
+# رِواق
 
 منصة Marketplace عربية متعددة البائعين (Multi-vendor) مبنية كـ MVP عملي باستخدام Next.js + Supabase + Brevo.
 

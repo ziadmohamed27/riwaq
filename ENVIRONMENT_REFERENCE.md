@@ -1,4 +1,4 @@
-# Environment Reference — رواق
+# Environment Reference — رِواق
 
 هذا الملف يوضح متغيرات البيئة المطلوبة في المشروع، أين توضع، ولماذا نحتاجها.
 

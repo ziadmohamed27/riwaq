@@ -1,29 +1,6 @@
-# netlify.toml
-# إعدادات النشر على Netlify لمشروع Next.js 15
-# هذا الملف ضروري لتشغيل Next.js SSR على Netlify
-
 [build]
-  base      = "cleaned_riwaq"
-  command   = "npm run build"
-  publish   = ".next"
+  command = "npm run build"
+  publish = ".next"
 
-# ─── Plugin المطلوب لتشغيل Next.js SSR على Netlify ──────────────────────────
 [[plugins]]
   package = "@netlify/plugin-nextjs"
-
-# ─── متغيرات البيئة الضرورية (أضفها يدويًا في Netlify Dashboard) ────────────
-# لا تضع القيم الفعلية هنا — هذا مجرد توثيق للمتغيرات المطلوبة
-#
-# [build.environment]
-#   NEXT_PUBLIC_SUPABASE_URL      = ""
-#   NEXT_PUBLIC_SUPABASE_ANON_KEY = ""
-#   NEXT_PUBLIC_APP_URL           = ""
-#   SUPABASE_SERVICE_ROLE_KEY     = ""
-
-# ─── إعدادات الـ headers الأمنية ────────────────────────────────────────────
-[[headers]]
-  for = "/*"
-  [headers.values]
-    X-Frame-Options        = "DENY"
-    X-Content-Type-Options = "nosniff"
-    Referrer-Policy        = "strict-origin-when-cross-origin"

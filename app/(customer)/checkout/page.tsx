@@ -36,8 +36,12 @@ export default async function CheckoutPage() {
     .eq('status', 'active')
     .maybeSingle()
 
+  const cartItems = Array.isArray((cart as any)?.cart_items)
+    ? (cart as any).cart_items
+    : []
+
   // السلة فارغة أو غير موجودة
-  if (!cart || !cart.cart_items || cart.cart_items.length === 0) {
+  if (!cart || cartItems.length === 0) {
     redirect('/cart')
   }
 
@@ -50,7 +54,7 @@ export default async function CheckoutPage() {
     .order('created_at', { ascending: false })
 
   // حساب المجموع (server-side للأمان — الـ Edge Function يتحقق أيضًا)
-  const subtotal = (cart.cart_items as any[]).reduce(
+  const subtotal = cartItems.reduce(
     (sum: number, item: any) => sum + Number(item.products.price) * item.quantity,
     0
   )

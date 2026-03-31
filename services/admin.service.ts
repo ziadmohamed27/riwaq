@@ -60,7 +60,7 @@ export type AdminSellerRow = StoreRow & {
 // ─────────────────────────────────────────────────────────────────────────────
 
 export async function getDashboardData(): Promise<AdminDashboardData> {
-  const supabase = createServiceClient()
+  const supabase = createServiceClient() as any
 
   const [
     { count: totalSellers },
@@ -103,7 +103,7 @@ export async function getDashboardData(): Promise<AdminDashboardData> {
     totalProducts:       totalProducts      ?? 0,
     totalOrders:         totalOrders        ?? 0,
     recentApplications: (recentApps ?? []) as ApplicationWithProfile[],
-    recentOrders: (recentOrders ?? []).map((o) => ({
+    recentOrders: ((recentOrders as any[]) ?? []).map((o: any) => ({
       ...o,
       item_count: (o as any).order_items?.length ?? 0,
       order_items: undefined,
@@ -118,7 +118,7 @@ export async function getDashboardData(): Promise<AdminDashboardData> {
 export async function getAdminApplications(
   status?: 'pending' | 'approved' | 'rejected'
 ): Promise<ApplicationWithProfile[]> {
-  const supabase = createServiceClient()
+  const supabase = createServiceClient() as any
 
   let query = supabase
     .from('seller_applications')
@@ -137,7 +137,7 @@ export async function getAdminApplications(
 // ─────────────────────────────────────────────────────────────────────────────
 
 export async function getAdminSellers(): Promise<AdminSellerRow[]> {
-  const supabase = createServiceClient()
+  const supabase = createServiceClient() as any
 
   const { data, error } = await supabase
     .from('stores')
@@ -157,7 +157,7 @@ export async function getAdminSellers(): Promise<AdminSellerRow[]> {
 // ─────────────────────────────────────────────────────────────────────────────
 
 export async function getAdminOrders(): Promise<AdminOrderSummary[]> {
-  const supabase = createServiceClient()
+  const supabase = createServiceClient() as any
 
   const { data, error } = await supabase
     .from('orders')
@@ -166,7 +166,7 @@ export async function getAdminOrders(): Promise<AdminOrderSummary[]> {
 
   if (error) { console.error('getAdminOrders:', error); return [] }
 
-  return (data ?? []).map((o) => ({
+  return ((data as any[]) ?? []).map((o: any) => ({
     ...o,
     item_count: (o as any).order_items?.length ?? 0,
     order_items: undefined,
@@ -180,7 +180,7 @@ export async function getAdminOrders(): Promise<AdminOrderSummary[]> {
 export async function getAdminOrderDetails(
   orderNumber: string
 ): Promise<AdminOrderDetails | null> {
-  const supabase = createServiceClient()
+  const supabase = createServiceClient() as any
 
   const { data, error } = await supabase
     .from('orders')
@@ -201,7 +201,7 @@ export async function getAdminOrderDetails(
       new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
   )
 
-  return { ...data, order_status_history: sortedHistory } as unknown as AdminOrderDetails
+  return { ...(data as any), order_status_history: sortedHistory } as unknown as AdminOrderDetails
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -209,7 +209,7 @@ export async function getAdminOrderDetails(
 // ─────────────────────────────────────────────────────────────────────────────
 
 export async function getAdminCategories(): Promise<CategoryRow[]> {
-  const supabase = createServiceClient()
+  const supabase = createServiceClient() as any
 
   const { data, error } = await supabase
     .from('categories')

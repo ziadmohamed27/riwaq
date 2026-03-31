@@ -15,7 +15,7 @@ interface AdminCategoriesTableProps {
 }
 
 export function AdminCategoriesTable({ initialCategories }: AdminCategoriesTableProps) {
-  const supabase = createClient()
+  const supabase = createClient() as any
 
   const [categories,  setCategories]  = useState<CategoryRow[]>(initialCategories)
   const [showForm,    setShowForm]    = useState(false)
@@ -50,7 +50,7 @@ export function AdminCategoriesTable({ initialCategories }: AdminCategoriesTable
   async function handleToggleActive(cat: CategoryRow) {
     setTogglingId(cat.id)
     setError(null)
-    const { error: err } = await (supabase as any)
+    const { error: err } = await supabase
       .from('categories')
       .update({ is_active: !cat.is_active })
       .eq('id', cat.id)

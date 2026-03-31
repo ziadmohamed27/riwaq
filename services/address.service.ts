@@ -6,7 +6,7 @@
 import { createClient } from '@/lib/supabase/client'
 import type { Database } from '@/types/database.types'
 
-type SupabaseClient = ReturnType<typeof createClient>
+type SupabaseClient = any
 
 export type CustomerAddress = Database['public']['Tables']['customer_addresses']['Row']
 export type CustomerAddressInsert = Database['public']['Tables']['customer_addresses']['Insert']

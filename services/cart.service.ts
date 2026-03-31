@@ -7,7 +7,7 @@
 import { createClient } from '@/lib/supabase/client'
 import type { Database } from '@/types/database.types'
 
-type SupabaseClient = ReturnType<typeof createClient>
+type SupabaseClient = any
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Types
@@ -110,7 +110,7 @@ export async function getCartWithItems(
     return null
   }
 
-  return data as CartWithItems | null
+  return data as any as CartWithItems | null
 }
 
 // ─────────────────────────────────────────────────────────────────────────────

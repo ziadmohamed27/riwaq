@@ -26,8 +26,7 @@ function generateSlug(text: string): string {
 }
 
 export function AdminCategoryForm({ existing, onSuccess, onCancel }: AdminCategoryFormProps) {
-  const supabase = createClient()
-  const client = supabase as any
+  const supabase = createClient() as any
   const isEdit   = Boolean(existing)
 
   const [name,        setName]        = useState(existing?.name        ?? '')
@@ -61,7 +60,7 @@ export function AdminCategoryForm({ existing, onSuccess, onCancel }: AdminCatego
       }
 
       if (isEdit && existing) {
-        const { data, error: err } = await client
+        const { data, error: err } = await supabase
           .from('categories')
           .update(payload)
           .eq('id', existing.id)
@@ -71,7 +70,7 @@ export function AdminCategoryForm({ existing, onSuccess, onCancel }: AdminCatego
         if (err) { setError(err.message); return }
         onSuccess(data as CategoryRow)
       } else {
-        const { data, error: err } = await client
+        const { data, error: err } = await supabase
           .from('categories')
           .insert(payload)
           .select()

@@ -27,7 +27,7 @@ export interface AuthState {
 // ─────────────────────────────────────────────────────────────────────────────
 
 export function useAuth(): AuthState {
-  const supabase = createClient()
+  const supabase = createClient() as any
 
   const [state, setState] = useState<AuthState>({
     user:       null,
@@ -56,7 +56,8 @@ export function useAuth(): AuthState {
       .select('role')
       .eq('user_id', user.id)
 
-    const roles = rolesData?.map((r) => r.role) ?? []
+    const safeRolesData = Array.isArray(rolesData) ? (rolesData as any[]) : []
+    const roles = safeRolesData.map((r) => r.role)
 
     setState({
       user,

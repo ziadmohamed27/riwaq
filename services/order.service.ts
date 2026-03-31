@@ -34,7 +34,7 @@ export interface OrderDetails extends OrderRow {
 // ─────────────────────────────────────────────────────────────────────────────
 
 export async function getCustomerOrders(customerId: string): Promise<OrderSummary[]> {
-  const supabase = await createClient()
+  const supabase = (await createClient()) as any
 
   const { data, error } = await supabase
     .from('orders')
@@ -50,7 +50,7 @@ export async function getCustomerOrders(customerId: string): Promise<OrderSummar
     return []
   }
 
-  return (data ?? []).map((order) => ({
+  return ((data as any[]) ?? []).map((order: any) => ({
     ...order,
     item_count: (order as any).order_items?.length ?? 0,
     order_items: undefined,   // نحذف العناصر من النتيجة، لا نحتاجها هنا
@@ -65,7 +65,7 @@ export async function getOrderDetails(
   orderNumber: string,
   customerId:  string
 ): Promise<OrderDetails | null> {
-  const supabase = await createClient()
+  const supabase = (await createClient()) as any
 
   const { data, error } = await supabase
     .from('orders')
@@ -100,7 +100,7 @@ export async function getOrderDetails(
   )
 
   return {
-    ...data,
+    ...(data as any),
     order_status_history: sortedHistory,
   } as unknown as OrderDetails
 }

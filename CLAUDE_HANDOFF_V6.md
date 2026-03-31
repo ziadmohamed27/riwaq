@@ -1,7 +1,7 @@
 # Claude Handoff Packet — Riwaq v6
 
 ## Source of truth
-This repository state is the latest approved source of truth for **رواق**.
+This repository state is the latest approved source of truth for **رِواق**.
 Do not start from scratch. Continue from the existing codebase only.
 
 ## Project summary

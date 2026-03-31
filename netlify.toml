@@ -3,6 +3,7 @@
 # هذا الملف ضروري لتشغيل Next.js SSR على Netlify
 
 [build]
+  base      = "cleaned_riwaq"
   command   = "npm run build"
   publish   = ".next"
 

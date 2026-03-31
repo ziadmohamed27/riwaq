@@ -58,7 +58,7 @@ export interface PaginatedProducts {
 // ─────────────────────────────────────────────────────────────────────────────
 
 export async function getProducts(
-  supabase: SupabaseClient<Database>,
+  supabase: SupabaseClient<Database, 'public', any>,
   filters:  ProductFilters = {}
 ): Promise<PaginatedProducts> {
   const {
@@ -166,7 +166,7 @@ export async function getProducts(
 // ─────────────────────────────────────────────────────────────────────────────
 
 export async function getProductBySlug(
-  supabase: SupabaseClient<Database>,
+  supabase: SupabaseClient<Database, 'public', any>,
   slug:     string
 ): Promise<ProductRow & {
   stores:         { id: string; name: string; slug: string; city: string | null }
@@ -212,7 +212,7 @@ export async function getProductBySlug(
 // ─────────────────────────────────────────────────────────────────────────────
 
 export async function getFeaturedProducts(
-  supabase: SupabaseClient<Database>,
+  supabase: SupabaseClient<Database, 'public', any>,
   limit     = 8
 ): Promise<ProductListItem[]> {
   const result = await getProducts(supabase, { isFeatured: true, pageSize: limit })
@@ -224,7 +224,7 @@ export async function getFeaturedProducts(
 // ─────────────────────────────────────────────────────────────────────────────
 
 export async function getActiveCategories(
-  supabase: SupabaseClient<Database>
+  supabase: SupabaseClient<Database, 'public', any>
 ): Promise<{ id: string; name: string; slug: string; image_url: string | null }[]> {
   const { data, error } = await supabase
     .from('categories')

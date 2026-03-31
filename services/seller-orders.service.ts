@@ -2,7 +2,7 @@ import type { Database } from '@/types/database.types'
 import type { SupabaseClient } from '@supabase/supabase-js'
 import type { UpdateOrderStatusResponse, UpdateOrderStatusRequest, OrderStatus } from '@/types/api.types'
 
-type AppSupabaseClient = SupabaseClient<Database>
+type AppSupabaseClient = SupabaseClient<Database, 'public', any>
 type OrderRow = Database['public']['Tables']['orders']['Row']
 type OrderItemRow = Database['public']['Tables']['order_items']['Row']
 type OrderHistoryRow = Database['public']['Tables']['order_status_history']['Row']

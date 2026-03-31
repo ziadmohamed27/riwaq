@@ -2,7 +2,7 @@ import { generateStoreSlug } from '@/lib/utils/store-slug'
 import type { Database } from '@/types/database.types'
 import type { SupabaseClient } from '@supabase/supabase-js'
 
-type AppSupabaseClient = SupabaseClient<Database>
+type AppSupabaseClient = SupabaseClient<Database, 'public', any>
 type SellerApplicationRow = Database['public']['Tables']['seller_applications']['Row']
 type StoreRow = Database['public']['Tables']['stores']['Row']
 type ProductRow = Database['public']['Tables']['products']['Row']

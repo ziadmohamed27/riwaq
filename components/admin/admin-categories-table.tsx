@@ -50,9 +50,9 @@ export function AdminCategoriesTable({ initialCategories }: AdminCategoriesTable
   async function handleToggleActive(cat: CategoryRow) {
     setTogglingId(cat.id)
     setError(null)
-    const { error: err } = await supabase
+    const { error: err } = await (supabase as any)
       .from('categories')
-      .update({ is_active: !cat.is_active } as any)
+      .update({ is_active: !cat.is_active })
       .eq('id', cat.id)
     setTogglingId(null)
     if (err) { setError('فشل تحديث الحالة'); return }

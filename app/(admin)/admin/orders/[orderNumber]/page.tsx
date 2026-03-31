@@ -33,7 +33,6 @@ export default async function AdminOrderDetailsPage({ params }: PageProps) {
 
   return (
     <div dir="rtl" className="space-y-6">
-      {/* ── Back ──────────────────────────────────────────────────────── */}
       <div className="flex items-center gap-3">
         <Link
           href="/admin/orders"
@@ -46,13 +45,14 @@ export default async function AdminOrderDetailsPage({ params }: PageProps) {
         <p className="text-sm text-stone-400">العودة إلى الطلبات</p>
       </div>
 
-      {/* ── Header ────────────────────────────────────────────────────── */}
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <h1 className="text-xl font-bold text-stone-900">
             طلب رقم {order.order_number}
           </h1>
-          <p className="mt-1 text-sm text-stone-400">{formatDateTime(order.created_at)}</p>
+          <p className="mt-1 text-sm text-stone-400">
+            {formatDateTime(order.created_at)}
+          </p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
           <OrderStatusBadge status={order.status} />
@@ -71,7 +71,6 @@ export default async function AdminOrderDetailsPage({ params }: PageProps) {
 
       <div className="grid gap-6 lg:grid-cols-3">
         <div className="space-y-5 lg:col-span-2">
-          {/* ── Store ──────────────────────────────────────────────────── */}
           {order.stores && (
             <section className="rounded-2xl border border-stone-200 bg-white p-5">
               <h2 className="mb-3 text-sm font-bold text-stone-700">المتجر</h2>
@@ -80,7 +79,6 @@ export default async function AdminOrderDetailsPage({ params }: PageProps) {
             </section>
           )}
 
-          {/* ── Customer snapshot ─────────────────────────────────────── */}
           <section className="rounded-2xl border border-stone-200 bg-white p-5">
             <h2 className="mb-3 text-sm font-bold text-stone-700">بيانات العميل</h2>
             <div className="space-y-1 text-sm">
@@ -89,7 +87,6 @@ export default async function AdminOrderDetailsPage({ params }: PageProps) {
             </div>
           </section>
 
-          {/* ── Shipping snapshot ─────────────────────────────────────── */}
           <section className="rounded-2xl border border-stone-200 bg-white p-5">
             <h2 className="mb-3 text-sm font-bold text-stone-700">عنوان التوصيل</h2>
             <div className="space-y-0.5 text-sm text-stone-600">
@@ -104,7 +101,6 @@ export default async function AdminOrderDetailsPage({ params }: PageProps) {
             </div>
           </section>
 
-          {/* ── Items snapshot ────────────────────────────────────────── */}
           <section className="rounded-2xl border border-stone-200 bg-white p-5">
             <h2 className="mb-4 text-sm font-bold text-stone-700">
               المنتجات ({order.order_items.length})
@@ -132,7 +128,6 @@ export default async function AdminOrderDetailsPage({ params }: PageProps) {
             </div>
           </section>
 
-          {/* ── Notes ─────────────────────────────────────────────────── */}
           {order.notes && (
             <section className="rounded-2xl border border-stone-200 bg-white p-5">
               <h2 className="mb-2 text-sm font-bold text-stone-700">ملاحظات العميل</h2>
@@ -141,9 +136,7 @@ export default async function AdminOrderDetailsPage({ params }: PageProps) {
           )}
         </div>
 
-        {/* ── Sidebar ───────────────────────────────────────────────── */}
         <div className="space-y-5">
-          {/* ── Totals ────────────────────────────────────────────────── */}
           <section className="space-y-2.5 rounded-2xl border border-stone-200 bg-white p-5">
             <h2 className="text-sm font-bold text-stone-700">ملخص الفاتورة</h2>
             <Row label="المجموع الفرعي" value={formatCurrency(order.subtotal)} />
@@ -172,7 +165,6 @@ export default async function AdminOrderDetailsPage({ params }: PageProps) {
             </div>
           </section>
 
-          {/* ── IDs (debug) ─────────────────────────────────────────── */}
           <section className="space-y-1.5 rounded-2xl border border-stone-100 bg-stone-50 p-4">
             <p className="text-xs font-bold uppercase tracking-wide text-stone-400">معرّفات</p>
             <IdRow label="Order ID" value={order.id} />
@@ -180,7 +172,6 @@ export default async function AdminOrderDetailsPage({ params }: PageProps) {
             <IdRow label="Store ID" value={order.store_id} />
           </section>
 
-          {/* ── Status timeline ───────────────────────────────────────── */}
           {order.order_status_history.length > 0 && (
             <section className="rounded-2xl border border-stone-200 bg-white p-5">
               <h2 className="mb-4 text-sm font-bold text-stone-700">تاريخ الحالة</h2>
@@ -236,7 +227,9 @@ function StatusTimeline({ history }: { history: HistoryRow[] }) {
               {getOrderStatusLabel(entry.new_status)}
             </p>
             <p className="text-xs text-stone-400">{formatDateTime(entry.created_at)}</p>
-            {entry.notes && <p className="mt-0.5 text-xs text-stone-500">{entry.notes}</p>}
+            {entry.notes && (
+              <p className="mt-0.5 text-xs text-stone-500">{entry.notes}</p>
+            )}
           </li>
         )
       })}

@@ -2,30 +2,31 @@
 // Server Component — يقرأ searchParams ويمرّرها للـ LoginForm
 
 import type { Metadata } from 'next'
-import Link              from 'next/link'
-import { LoginForm }     from '@/components/auth/login-form'
+import Link from 'next/link'
+import { LoginForm } from '@/components/auth/login-form'
 
 export const metadata: Metadata = {
   title: 'تسجيل الدخول — رِواق',
 }
 
 interface PageProps {
-  searchParams: {
+  searchParams: Promise<{
     redirect?: string
-    error?:    string
-  }
+    error?: string
+  }>
 }
 
-export default function LoginPage({ searchParams }: PageProps) {
+export default async function LoginPage({ searchParams }: PageProps) {
+  const { redirect, error } = await searchParams
+
   // نتحقق من redirect URL: يجب أن يبدأ بـ / فقط (حماية من open redirects)
-  const rawRedirect = searchParams.redirect
-  const redirectTo  = rawRedirect?.startsWith('/') ? rawRedirect : '/'
-  const errorParam  = searchParams.error
+  const rawRedirect = redirect
+  const redirectTo = rawRedirect?.startsWith('/') ? rawRedirect : '/'
+  const errorParam = error
 
   return (
     <div dir="rtl" className="flex min-h-screen items-center justify-center bg-stone-50 px-4">
       <div className="w-full max-w-md">
-
         {/* ── Brand ────────────────────────────────────────────────────── */}
         <div className="mb-8 text-center">
           <Link href="/" className="text-2xl font-bold text-stone-900 hover:text-amber-600 transition">
@@ -47,7 +48,6 @@ export default function LoginPage({ searchParams }: PageProps) {
           {' '}و{' '}
           <Link href="/privacy" className="underline hover:text-stone-600">سياسة الخصوصية</Link>
         </p>
-
       </div>
     </div>
   )

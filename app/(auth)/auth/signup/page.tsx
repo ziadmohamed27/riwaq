@@ -2,25 +2,25 @@
 // Server Component
 
 import type { Metadata } from 'next'
-import Link              from 'next/link'
-import { SignupForm }    from '@/components/auth/signup-form'
+import Link from 'next/link'
+import { SignupForm } from '@/components/auth/signup-form'
 
 export const metadata: Metadata = {
   title: 'إنشاء حساب — رِواق',
 }
 
 interface PageProps {
-  searchParams: { redirect?: string }
+  searchParams: Promise<{ redirect?: string }>
 }
 
-export default function SignupPage({ searchParams }: PageProps) {
-  const rawRedirect = searchParams.redirect
-  const redirectTo  = rawRedirect?.startsWith('/') ? rawRedirect : '/'
+export default async function SignupPage({ searchParams }: PageProps) {
+  const { redirect } = await searchParams
+  const rawRedirect = redirect
+  const redirectTo = rawRedirect?.startsWith('/') ? rawRedirect : '/'
 
   return (
     <div dir="rtl" className="flex min-h-screen items-center justify-center bg-stone-50 px-4 py-10">
       <div className="w-full max-w-md">
-
         {/* ── Brand ────────────────────────────────────────────────────── */}
         <div className="mb-8 text-center">
           <Link href="/" className="text-2xl font-bold text-stone-900 hover:text-amber-600 transition">
@@ -42,7 +42,6 @@ export default function SignupPage({ searchParams }: PageProps) {
           {' '}و{' '}
           <Link href="/privacy" className="underline hover:text-stone-600">سياسة الخصوصية</Link>
         </p>
-
       </div>
     </div>
   )

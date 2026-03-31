@@ -12,10 +12,11 @@ export const metadata: Metadata = {
 }
 
 interface PageProps {
-  searchParams?: { status?: string }
+  searchParams?: Promise<{ status?: string }>
 }
 
 export default async function SellerOrdersPage({ searchParams }: PageProps) {
+  const resolvedSearchParams = searchParams ? await searchParams : undefined
   const supabase = await createClient()
   const {
     data: { user },
@@ -26,7 +27,7 @@ export default async function SellerOrdersPage({ searchParams }: PageProps) {
   if (!store) redirect('/seller/status')
 
   const orders = await getSellerOrders(supabase, user.id)
-  const statusFilter = searchParams?.status?.trim()
+  const statusFilter = resolvedSearchParams?.status?.trim()
   const filteredOrders = filterOrdersByStatus(orders, statusFilter)
 
   return (

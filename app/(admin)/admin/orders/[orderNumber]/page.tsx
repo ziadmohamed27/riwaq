@@ -28,7 +28,6 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 export default async function AdminOrderDetailsPage({ params }: PageProps) {
   const { orderNumber } = await params
   const order = await getAdminOrderDetails(orderNumber)
-
   if (!order) notFound()
 
   return (
@@ -47,12 +46,8 @@ export default async function AdminOrderDetailsPage({ params }: PageProps) {
 
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <h1 className="text-xl font-bold text-stone-900">
-            طلب رقم {order.order_number}
-          </h1>
-          <p className="mt-1 text-sm text-stone-400">
-            {formatDateTime(order.created_at)}
-          </p>
+          <h1 className="text-xl font-bold text-stone-900">طلب رقم {order.order_number}</h1>
+          <p className="mt-1 text-sm text-stone-400">{formatDateTime(order.created_at)}</p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
           <OrderStatusBadge status={order.status} />
@@ -102,9 +97,7 @@ export default async function AdminOrderDetailsPage({ params }: PageProps) {
           </section>
 
           <section className="rounded-2xl border border-stone-200 bg-white p-5">
-            <h2 className="mb-4 text-sm font-bold text-stone-700">
-              المنتجات ({order.order_items.length})
-            </h2>
+            <h2 className="mb-4 text-sm font-bold text-stone-700">المنتجات ({order.order_items.length})</h2>
             <div className="divide-y divide-stone-100">
               {order.order_items.map((item) => (
                 <div
@@ -227,9 +220,7 @@ function StatusTimeline({ history }: { history: HistoryRow[] }) {
               {getOrderStatusLabel(entry.new_status)}
             </p>
             <p className="text-xs text-stone-400">{formatDateTime(entry.created_at)}</p>
-            {entry.notes && (
-              <p className="mt-0.5 text-xs text-stone-500">{entry.notes}</p>
-            )}
+            {entry.notes && <p className="mt-0.5 text-xs text-stone-500">{entry.notes}</p>}
           </li>
         )
       })}

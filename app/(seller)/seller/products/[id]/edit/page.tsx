@@ -6,7 +6,7 @@ import { SellerNav } from '@/components/seller/seller-nav'
 import { ProductForm } from '@/components/seller/product-form'
 
 interface PageProps {
-  params: { id: string }
+  params: Promise<{ id: string }>
 }
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -14,14 +14,15 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function EditSellerProductPage({ params }: PageProps) {
+  const { id } = await params
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
-  if (!user) redirect(`/auth/login?redirect=/seller/products/${params.id}/edit`)
+  if (!user) redirect(`/auth/login?redirect=/seller/products/${id}/edit`)
 
   const [storeId, categories, product] = await Promise.all([
     getSellerStoreId(supabase, user.id),
     getSellerCategories(supabase),
-    getSellerProductById(supabase, user.id, params.id),
+    getSellerProductById(supabase, user.id, id),
   ])
 
   if (!storeId) redirect('/seller/status')

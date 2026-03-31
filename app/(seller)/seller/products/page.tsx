@@ -11,10 +11,11 @@ export const metadata: Metadata = {
 }
 
 interface PageProps {
-  searchParams?: { filter?: string }
+  searchParams?: Promise<{ filter?: string }>
 }
 
 export default async function SellerProductsPage({ searchParams }: PageProps) {
+  const resolvedSearchParams = searchParams ? await searchParams : undefined
   const supabase = await createClient()
   const {
     data: { user },
@@ -25,7 +26,7 @@ export default async function SellerProductsPage({ searchParams }: PageProps) {
   if (!store) redirect('/seller/status')
 
   const products = await getSellerProducts(supabase, user.id)
-  const activeFilter = searchParams?.filter === 'low-stock' ? 'low-stock' : 'all'
+  const activeFilter = resolvedSearchParams?.filter === 'low-stock' ? 'low-stock' : 'all'
 
   return (
     <div dir="rtl" className="min-h-screen bg-stone-50">

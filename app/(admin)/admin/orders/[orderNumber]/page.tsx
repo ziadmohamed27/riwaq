@@ -1,11 +1,11 @@
 // app/(admin)/admin/orders/[orderNumber]/page.tsx
 // تفاصيل طلب — admin view كاملة بدون قيود customer_id
 
-import { notFound }              from 'next/navigation'
-import type { Metadata }         from 'next'
-import Link                      from 'next/link'
-import { getAdminOrderDetails }  from '@/services/admin.service'
-import { OrderStatusBadge }      from '@/components/account/order-status-badge'
+import { notFound } from 'next/navigation'
+import type { Metadata } from 'next'
+import Link from 'next/link'
+import { getAdminOrderDetails } from '@/services/admin.service'
+import { OrderStatusBadge } from '@/components/account/order-status-badge'
 import {
   formatDateTime,
   formatCurrency,
@@ -17,25 +17,27 @@ import type { Database } from '@/types/database.types'
 type HistoryRow = Database['public']['Tables']['order_status_history']['Row']
 
 interface PageProps {
-  params: { orderNumber: string }
+  params: Promise<{ orderNumber: string }>
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  return { title: `طلب ${params.orderNumber} — لوحة إدارة رِواق` }
+  const { orderNumber } = await params
+  return { title: `طلب ${orderNumber} — لوحة إدارة رِواق` }
 }
 
 export default async function AdminOrderDetailsPage({ params }: PageProps) {
-  const order = await getAdminOrderDetails(params.orderNumber)
+  const { orderNumber } = await params
+  const order = await getAdminOrderDetails(orderNumber)
+
   if (!order) notFound()
 
   return (
     <div dir="rtl" className="space-y-6">
-
       {/* ── Back ──────────────────────────────────────────────────────── */}
       <div className="flex items-center gap-3">
         <Link
           href="/admin/orders"
-          className="flex h-9 w-9 items-center justify-center rounded-full border border-stone-200 bg-white text-stone-500 hover:border-stone-300 transition"
+          className="flex h-9 w-9 items-center justify-center rounded-full border border-stone-200 bg-white text-stone-500 transition hover:border-stone-300"
         >
           <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
@@ -50,18 +52,18 @@ export default async function AdminOrderDetailsPage({ params }: PageProps) {
           <h1 className="text-xl font-bold text-stone-900">
             طلب رقم {order.order_number}
           </h1>
-          <p className="mt-1 text-sm text-stone-400">
-            {formatDateTime(order.created_at)}
-          </p>
+          <p className="mt-1 text-sm text-stone-400">{formatDateTime(order.created_at)}</p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
           <OrderStatusBadge status={order.status} />
-          <span className={`
-            inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium
-            ${order.payment_status === 'paid'     ? 'bg-emerald-100 text-emerald-800' : ''}
-            ${order.payment_status === 'pending'  ? 'bg-amber-100 text-amber-800'     : ''}
-            ${order.payment_status === 'refunded' ? 'bg-stone-100 text-stone-600'     : ''}
-          `}>
+          <span
+            className={`
+              inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium
+              ${order.payment_status === 'paid' ? 'bg-emerald-100 text-emerald-800' : ''}
+              ${order.payment_status === 'pending' ? 'bg-amber-100 text-amber-800' : ''}
+              ${order.payment_status === 'refunded' ? 'bg-stone-100 text-stone-600' : ''}
+            `}
+          >
             💳 {getPaymentStatusLabel(order.payment_status)}
           </span>
         </div>
@@ -69,13 +71,12 @@ export default async function AdminOrderDetailsPage({ params }: PageProps) {
 
       <div className="grid gap-6 lg:grid-cols-3">
         <div className="space-y-5 lg:col-span-2">
-
           {/* ── Store ──────────────────────────────────────────────────── */}
           {order.stores && (
             <section className="rounded-2xl border border-stone-200 bg-white p-5">
               <h2 className="mb-3 text-sm font-bold text-stone-700">المتجر</h2>
               <p className="text-sm font-semibold text-stone-800">{order.stores.name}</p>
-              <p className="mt-0.5 text-xs text-stone-400 font-mono">{order.stores.slug}</p>
+              <p className="mt-0.5 font-mono text-xs text-stone-400">{order.stores.slug}</p>
             </section>
           )}
 
@@ -138,16 +139,14 @@ export default async function AdminOrderDetailsPage({ params }: PageProps) {
               <p className="text-sm text-stone-600">{order.notes}</p>
             </section>
           )}
-
         </div>
 
         {/* ── Sidebar ───────────────────────────────────────────────── */}
         <div className="space-y-5">
-
           {/* ── Totals ────────────────────────────────────────────────── */}
-          <section className="rounded-2xl border border-stone-200 bg-white p-5 space-y-2.5">
+          <section className="space-y-2.5 rounded-2xl border border-stone-200 bg-white p-5">
             <h2 className="text-sm font-bold text-stone-700">ملخص الفاتورة</h2>
-            <Row label="المجموع الفرعي"  value={formatCurrency(order.subtotal)} />
+            <Row label="المجموع الفرعي" value={formatCurrency(order.subtotal)} />
             <Row
               label="رسوم التوصيل"
               value={order.delivery_fee === 0 ? 'مجاني' : formatCurrency(order.delivery_fee)}
@@ -165,16 +164,20 @@ export default async function AdminOrderDetailsPage({ params }: PageProps) {
             </div>
             <div className="flex items-center justify-between text-xs text-stone-500">
               <span>طريقة الدفع</span>
-              <span>{order.payment_method === 'cash_on_delivery' ? 'الدفع عند الاستلام' : order.payment_method}</span>
+              <span>
+                {order.payment_method === 'cash_on_delivery'
+                  ? 'الدفع عند الاستلام'
+                  : order.payment_method}
+              </span>
             </div>
           </section>
 
           {/* ── IDs (debug) ─────────────────────────────────────────── */}
-          <section className="rounded-2xl border border-stone-100 bg-stone-50 p-4 space-y-1.5">
-            <p className="text-xs font-bold text-stone-400 uppercase tracking-wide">معرّفات</p>
-            <IdRow label="Order ID"    value={order.id} />
+          <section className="space-y-1.5 rounded-2xl border border-stone-100 bg-stone-50 p-4">
+            <p className="text-xs font-bold uppercase tracking-wide text-stone-400">معرّفات</p>
+            <IdRow label="Order ID" value={order.id} />
             <IdRow label="Customer ID" value={order.customer_id} />
-            <IdRow label="Store ID"    value={order.store_id} />
+            <IdRow label="Store ID" value={order.store_id} />
           </section>
 
           {/* ── Status timeline ───────────────────────────────────────── */}
@@ -184,20 +187,21 @@ export default async function AdminOrderDetailsPage({ params }: PageProps) {
               <StatusTimeline history={order.order_status_history} />
             </section>
           )}
-
         </div>
       </div>
     </div>
   )
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Small helpers
-// ─────────────────────────────────────────────────────────────────────────────
-
 function Row({
-  label, value, valueClass = 'text-stone-700',
-}: { label: string; value: string; valueClass?: string }) {
+  label,
+  value,
+  valueClass = 'text-stone-700',
+}: {
+  label: string
+  value: string
+  valueClass?: string
+}) {
   return (
     <div className="flex items-center justify-between text-sm">
       <span className="text-stone-500">{label}</span>
@@ -210,29 +214,29 @@ function IdRow({ label, value }: { label: string; value: string }) {
   return (
     <div>
       <p className="text-xs text-stone-400">{label}</p>
-      <p className="font-mono text-xs text-stone-600 break-all">{value}</p>
+      <p className="break-all font-mono text-xs text-stone-600">{value}</p>
     </div>
   )
 }
 
 function StatusTimeline({ history }: { history: HistoryRow[] }) {
   return (
-    <ol className="relative border-s border-stone-200 space-y-4 ps-5">
+    <ol className="relative space-y-4 border-s border-stone-200 ps-5">
       {history.map((entry, i) => {
         const isLast = i === history.length - 1
         return (
           <li key={entry.id} className="relative">
-            <div className={`
-              absolute -start-[1.15rem] top-0.5 h-3.5 w-3.5 rounded-full border-2 border-white
-              ${isLast ? 'bg-amber-500' : 'bg-stone-300'}
-            `} />
+            <div
+              className={`
+                absolute -start-[1.15rem] top-0.5 h-3.5 w-3.5 rounded-full border-2 border-white
+                ${isLast ? 'bg-amber-500' : 'bg-stone-300'}
+              `}
+            />
             <p className={`text-sm font-semibold ${isLast ? 'text-stone-900' : 'text-stone-500'}`}>
               {getOrderStatusLabel(entry.new_status)}
             </p>
             <p className="text-xs text-stone-400">{formatDateTime(entry.created_at)}</p>
-            {entry.notes && (
-              <p className="mt-0.5 text-xs text-stone-500">{entry.notes}</p>
-            )}
+            {entry.notes && <p className="mt-0.5 text-xs text-stone-500">{entry.notes}</p>}
           </li>
         )
       })}

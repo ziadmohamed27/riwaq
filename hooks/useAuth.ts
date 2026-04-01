@@ -78,7 +78,7 @@ export function useAuth(): AuthState {
 
     // الاستماع لتغييرات الـ session
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (_event, session) => {
+      (_event: any, session: any) => {
         loadUserAndRoles(session?.user ?? null)
       }
     )

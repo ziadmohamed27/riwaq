@@ -71,7 +71,8 @@ export function useAuth(): AuthState {
 
   useEffect(() => {
     // الحالة الأولية
-    supabase.auth.getUser().then(({ data: { user } }) => {
+    supabase.auth.getUser().then((result: any) => {
+      const user = result?.data?.user ?? null
       loadUserAndRoles(user)
     })
 
